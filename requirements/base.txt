@@ -3,7 +3,6 @@ gunicorn>=22
 
 # IIL Platform Packages
 iil-learnfw[api]
-iil-django-commons>=0.3
 
 # Infrastructure
 celery[redis]>=5.3
