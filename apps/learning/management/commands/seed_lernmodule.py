@@ -573,7 +573,7 @@ class Command(BaseCommand):
                 title=ch_data["title"],
                 description=ch_data["description"],
                 ordering=ch_idx,
-                tenant_id="default",
+                tenant_id=DEFAULT_TENANT,
             )
             self.stdout.write(f"  Chapter {ch_idx}: {chapter.title}")
 
@@ -586,7 +586,7 @@ class Command(BaseCommand):
                     estimated_duration_minutes=ls_data["estimated_duration_minutes"],
                     ordering=ls_idx,
                     is_mandatory=True,
-                    tenant_id="default",
+                    tenant_id=DEFAULT_TENANT,
                 )
                 total_lessons += 1
                 self.stdout.write(f"    Lesson {ls_idx}: {lesson.title}")
@@ -601,7 +601,7 @@ class Command(BaseCommand):
                     max_attempts=0,
                     shuffle_questions=True,
                     is_active=True,
-                    tenant_id="default",
+                    tenant_id=DEFAULT_TENANT,
                 )
 
                 for q_idx, question_data in enumerate(q_data["questions"], 1):
@@ -609,7 +609,7 @@ class Command(BaseCommand):
                         quiz=quiz,
                         text=question_data["text"],
                         question_type="single_choice",
-                        tenant_id="default",
+                        tenant_id=DEFAULT_TENANT,
                     )
                     total_questions += 1
 
@@ -618,7 +618,7 @@ class Command(BaseCommand):
                             question=question,
                             text=a_text,
                             is_correct=is_correct,
-                            tenant_id="default",
+                            tenant_id=DEFAULT_TENANT,
                         )
 
                 self.stdout.write(
