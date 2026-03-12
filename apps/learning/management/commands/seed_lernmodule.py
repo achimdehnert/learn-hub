@@ -540,7 +540,7 @@ class Command(BaseCommand):
         # Category
         category, _ = Category.objects.get_or_create(
             name=COURSE_DATA["category"],
-            defaults={"tenant_id": "default"},
+            defaults={"tenant_id": DEFAULT_TENANT},
         )
         self.stdout.write(f"Category: {category.name}")
 
