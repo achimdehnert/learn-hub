@@ -12,7 +12,7 @@ services:
     image: ghcr.io/achimdehnert/learn-hub:latest
     env_file: .env.prod
     ports:
-      - "8100:8000"
+      - "127.0.0.1:8100:8000"
     depends_on:
       db: { condition: service_healthy }
       redis: { condition: service_healthy }
