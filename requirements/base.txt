@@ -2,7 +2,7 @@ Django>=5.0,<6.0
 gunicorn>=22
 
 # IIL Platform Packages
-iil-learnfw[api]
+iil-learnfw[api] @ git+https://github.com/achimdehnert/learnfw.git@main
 
 # Infrastructure
 celery[redis]>=5.3
