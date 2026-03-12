@@ -22,7 +22,7 @@ COPY --from=builder /install /usr/local
 WORKDIR /app
 COPY . .
 
-RUN python manage.py collectstatic --noinput 2>/dev/null || true
+RUN DJANGO_SECRET_KEY=build-placeholder python manage.py collectstatic --noinput
 
 USER app:app
 EXPOSE 8000
