@@ -8,7 +8,7 @@ from django.views.decorators.http import require_GET
 
 def index(request):
     """Root URL — redirect to admin until frontend is built."""
-    return redirect("admin/")
+    return redirect("/admin/")
 
 
 @csrf_exempt
