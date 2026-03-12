@@ -1,5 +1,7 @@
 """Seed KI ohne Risiko™ learning modules into the database."""
 
+import uuid
+
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 
@@ -14,6 +16,8 @@ from iil_learnfw.models import (
 )
 
 User = get_user_model()
+
+DEFAULT_TENANT = uuid.UUID("00000000-0000-0000-0000-000000000001")
 
 COURSE_DATA = {
     "category": "KI-Governance",
@@ -547,7 +551,7 @@ class Command(BaseCommand):
                 "description": COURSE_DATA["description"],
                 "status": COURSE_DATA["status"],
                 "category": category,
-                "tenant_id": "default",
+                "tenant_id": DEFAULT_TENANT,
             },
         )
         action = "Created" if created else "Exists"
