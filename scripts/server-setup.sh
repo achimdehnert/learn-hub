@@ -118,13 +118,11 @@ echo "  Nginx configured and reloaded"
 NGINX
 
 # 4. Start containers
-echo "4. Starting Docker containers..."
+echo "4. Building and starting Docker containers..."
 ssh "root@${SERVER}" <<'DOCKER'
 set -euo pipefail
 cd /opt/learn-hub
-docker compose -f docker-compose.prod.yml pull 2>/dev/null || true
-docker compose -f docker-compose.prod.yml run --rm migrate 2>/dev/null || echo "  Migration service will run on first compose up"
-docker compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.prod.yml up -d --build
 echo "  Containers started"
 docker compose -f docker-compose.prod.yml ps
 DOCKER
