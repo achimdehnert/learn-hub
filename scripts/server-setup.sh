@@ -72,14 +72,14 @@ server {
     server_name learn.iil.pet;
 
     location /livez/ {
-        proxy_pass http://127.0.0.1:8099;
+        proxy_pass http://127.0.0.1:8100;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
     location /healthz/ {
-        proxy_pass http://127.0.0.1:8099;
+        proxy_pass http://127.0.0.1:8100;
         proxy_set_header Host $host;
     }
     location / {
@@ -94,7 +94,7 @@ server {
     client_max_body_size 50M;
 
     location / {
-        proxy_pass http://127.0.0.1:8099;
+        proxy_pass http://127.0.0.1:8100;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -104,7 +104,7 @@ server {
         proxy_buffering off;
     }
     location /static/ {
-        proxy_pass http://127.0.0.1:8099;
+        proxy_pass http://127.0.0.1:8100;
         proxy_set_header Host $host;
         expires 1h;
         add_header Cache-Control "public";
@@ -135,7 +135,7 @@ ssh "root@${SERVER}" "certbot --nginx -d learn.iil.pet --non-interactive --agree
 echo "6. Health check..."
 sleep 10
 for i in $(seq 1 10); do
-    if curl -sf "http://${SERVER}:8099/livez/" > /dev/null 2>&1; then
+    if curl -sf "http://${SERVER}:8100/livez/" > /dev/null 2>&1; then
         echo "✅ learn-hub is healthy!"
         exit 0
     fi
@@ -144,7 +144,7 @@ for i in $(seq 1 10); do
 done
 
 echo "⚠️  Health check via external URL pending (DNS propagation may take time)"
-echo "   Check directly: curl http://${SERVER}:8099/livez/"
+echo "   Check directly: curl http://${SERVER}:8100/livez/"
 echo ""
 echo "=== Setup complete ==="
 echo "Next steps:"
