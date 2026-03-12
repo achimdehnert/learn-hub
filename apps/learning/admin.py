@@ -34,13 +34,13 @@ from iil_learnfw.models import (
 class ChapterInline(admin.TabularInline):
     model = Chapter
     extra = 0
-    fields = ("title", "order")
+    fields = ("title", "ordering")
 
 
 class LessonInline(admin.TabularInline):
     model = Lesson
     extra = 0
-    fields = ("title", "order", "lesson_type")
+    fields = ("title", "ordering", "content_type")
 
 
 @admin.register(Category)
@@ -59,15 +59,15 @@ class CourseAdmin(admin.ModelAdmin):
 
 @admin.register(Chapter)
 class ChapterAdmin(admin.ModelAdmin):
-    list_display = ("title", "course", "order")
+    list_display = ("title", "course", "ordering")
     list_filter = ("course",)
     inlines = [LessonInline]
 
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ("title", "chapter", "order", "lesson_type")
-    list_filter = ("lesson_type", "chapter__course")
+    list_display = ("title", "chapter", "ordering", "content_type")
+    list_filter = ("content_type", "chapter__course")
 
 
 @admin.register(Enrollment)
@@ -87,8 +87,8 @@ class AnswerInline(admin.TabularInline):
 
 @admin.register(Quiz)
 class QuizAdmin(admin.ModelAdmin):
-    list_display = ("title", "lesson", "passing_score")
-    list_filter = ("lesson__chapter__course",)
+    list_display = ("title", "chapter", "passing_score")
+    list_filter = ("chapter__course",)
 
 
 @admin.register(Question)
@@ -100,7 +100,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 @admin.register(Attempt)
 class AttemptAdmin(admin.ModelAdmin):
-    list_display = ("user", "quiz", "score", "passed", "created_at")
+    list_display = ("user", "quiz", "score", "passed", "started_at")
     list_filter = ("passed",)
     raw_id_fields = ("user",)
 
@@ -114,12 +114,12 @@ admin.site.register(AttemptAnswer)
 
 @admin.register(CertificateTemplate)
 class CertificateTemplateAdmin(admin.ModelAdmin):
-    list_display = ("name", "course")
+    list_display = ("name", "is_default")
 
 
 @admin.register(IssuedCertificate)
 class IssuedCertificateAdmin(admin.ModelAdmin):
-    list_display = ("user", "course", "issued_at")
+    list_display = ("user", "template", "tenant_id")
     raw_id_fields = ("user",)
 
 
@@ -128,8 +128,8 @@ class IssuedCertificateAdmin(admin.ModelAdmin):
 
 @admin.register(Badge)
 class BadgeAdmin(admin.ModelAdmin):
-    list_display = ("name", "badge_type")
-    list_filter = ("badge_type",)
+    list_display = ("name", "trigger", "is_active")
+    list_filter = ("trigger", "is_active")
 
 
 @admin.register(UserBadge)
@@ -156,7 +156,7 @@ class PointsTransactionAdmin(admin.ModelAdmin):
 class OnboardingStepInline(admin.TabularInline):
     model = OnboardingStep
     extra = 0
-    fields = ("title", "order", "step_type")
+    fields = ("title", "ordering", "is_required")
 
 
 @admin.register(OnboardingFlow)
@@ -167,12 +167,12 @@ class OnboardingFlowAdmin(admin.ModelAdmin):
 
 @admin.register(OnboardingStep)
 class OnboardingStepAdmin(admin.ModelAdmin):
-    list_display = ("title", "flow", "order", "step_type")
+    list_display = ("title", "flow", "ordering", "is_required")
 
 
 @admin.register(UserOnboardingState)
 class UserOnboardingStateAdmin(admin.ModelAdmin):
-    list_display = ("user", "flow", "completed")
+    list_display = ("user", "flow", "status")
     raw_id_fields = ("user",)
 
 
@@ -181,7 +181,7 @@ class UserOnboardingStateAdmin(admin.ModelAdmin):
 
 @admin.register(UserProgress)
 class UserProgressAdmin(admin.ModelAdmin):
-    list_display = ("user", "lesson", "status", "updated_at")
+    list_display = ("user", "lesson", "status", "completed_at")
     list_filter = ("status",)
     raw_id_fields = ("user",)
 
@@ -191,10 +191,10 @@ class UserProgressAdmin(admin.ModelAdmin):
 
 @admin.register(ScormPackage)
 class ScormPackageAdmin(admin.ModelAdmin):
-    list_display = ("title", "lesson", "scorm_version")
+    list_display = ("scorm_version", "course", "imported_at")
 
 
 @admin.register(ScormTracking)
 class ScormTrackingAdmin(admin.ModelAdmin):
-    list_display = ("user", "package", "completion_status")
+    list_display = ("user", "package", "status")
     raw_id_fields = ("user",)
