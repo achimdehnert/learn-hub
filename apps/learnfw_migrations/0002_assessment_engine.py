@@ -254,7 +254,7 @@ class Migration(migrations.Migration):
             model_name="assessmentattempt",
             index=models.Index(
                 fields=["tenant_id", "deleted_at", "-started_at"],
-                name="idx_attempt_tenant_deleted_date",
+                name="idx_attempt_tenant_del_date",
             ),
         ),
         migrations.AddIndex(
