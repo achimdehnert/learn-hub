@@ -10,6 +10,7 @@ urlpatterns = [
     path("healthz/", readiness, name="healthz"),
     path("readyz/", readiness, name="readyz"),
     path("admin/", admin.site.urls),
+    path("api/", include("iil_learnfw.api.urls")),
     path("kurse/", include("iil_learnfw.urls")),
     path("", include("apps.core.urls")),
 ]
