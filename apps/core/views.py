@@ -1,14 +1,14 @@
 """Health check views (ADR-140)."""
 
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
 
 def index(request):
-    """Root URL — redirect to admin until frontend is built."""
-    return redirect("/admin/")
+    """Root URL — landing page."""
+    return render(request, "core/index.html")
 
 
 @csrf_exempt
