@@ -118,6 +118,15 @@ IIL_LEARNFW = {
     "CONTENT_VERSIONING": True,
     "GAMIFICATION_ENABLED": True,
     "CERTIFICATE_ENGINE": "weasyprint",
+    # Assessment Engine (ADR-142)
+    "ASSESSMENT_ENGINE_ENABLED": True,
+    "ASSESSMENT_REPORT_ENGINE": "none",
+    "ASSESSMENT_LEAD_CAPTURE": False,
+    "ASSESSMENT_IP_HASH_SALT": config("ASSESSMENT_IP_HASH_SALT", default=""),
+    "DEFAULT_TENANT_ID": config(
+        "DEFAULT_TENANT_ID",
+        default="00000000-0000-0000-0000-000000000000",
+    ),
 }
 
 # Plattform-Admin (ADR-140 SUGGEST-4)
