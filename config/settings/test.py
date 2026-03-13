@@ -43,6 +43,8 @@ SILENCED_SYSTEM_CHECKS = [
     "security.W009",
     "security.W012",
     "security.W016",
+    "iil_learnfw.W001",  # IP hash salt not needed in tests
+    "iil_learnfw.W002",  # Lead capture email backend not needed in tests
 ]
 
 LOGGING = {
