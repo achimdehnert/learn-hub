@@ -23,3 +23,6 @@ htmlcov/
 staticfiles/
 media/
 *.log
+
+# IDE agent workflows (symlinked, not repo-specific)
+.windsurf/
