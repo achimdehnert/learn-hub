@@ -1,0 +1,23 @@
+# ╔═══════════════════════════════════════════════════════════════════════════╗
+# ║  LEARN-HUB CI — Platform Reusable Workflow (ADR-057)                     ║
+# ║  Uses: achimdehnert/platform/.github/workflows/_ci-python.yml@main      ║
+# ╚═══════════════════════════════════════════════════════════════════════════╝
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  ci:
+    name: "CI"
+    uses: achimdehnert/platform/.github/workflows/_ci-python.yml@main
+    with:
+      python_version: "3.12"
+      coverage_threshold: 80
+      django_settings_module: "config.settings.test"
+      enable_security_scan: true
