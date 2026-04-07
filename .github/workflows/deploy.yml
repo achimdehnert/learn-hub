@@ -28,8 +28,6 @@ jobs:
   ci:
     uses: achimdehnert/platform/.github/workflows/_ci-python.yml@main
     if: startsWith(github.ref, 'refs/heads/')
-    with:
-      runs_on: "ubuntu-latest"
     secrets: inherit
 
   deploy:
@@ -43,5 +41,4 @@ jobs:
       image_tag_override: ${{ inputs.image_tag_override || '' }}
       target_environment: ${{ inputs.target_environment || '' }}
       notify_discord: true
-      runs_on: "ubuntu-latest"
     secrets: inherit
