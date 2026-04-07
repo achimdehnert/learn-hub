@@ -21,3 +21,5 @@ jobs:
       coverage_threshold: 80
       django_settings_module: "config.settings.test"
       enable_security_scan: true
+      runs_on: "ubuntu-latest"
+    secrets: inherit
