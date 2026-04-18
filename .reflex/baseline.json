@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-04-18T10:55:22.313875+00:00",
+  "created_at": "2026-04-18T11:04:51.220375+00:00",
   "findings": [
     {
       "rule_id": "adr.no_adr_directory",
@@ -60,6 +60,26 @@
       "file_path": "docs/",
       "auto_fixable": false,
       "fix_complexity": "moderate"
+    },
+    {
+      "rule_id": "security.missing_dockerignore",
+      "severity": "block",
+      "message": "Missing .dockerignore — .env, .git, secrets may leak into Docker image",
+      "adr_ref": "ADR-021 §3",
+      "fix_hint": "Create .dockerignore with: .env* .git .reflex __pycache__ *.pyc",
+      "file_path": null,
+      "auto_fixable": true,
+      "fix_complexity": "trivial"
+    },
+    {
+      "rule_id": "security.compose_port_implicit_bind",
+      "severity": "warn",
+      "message": "docker-compose.prod.yml:47: Port '5499:5432' implicitly binds to all interfaces",
+      "adr_ref": "ADR-164 §5.1",
+      "fix_hint": "Change to 127.0.0.1:5499:5432",
+      "file_path": "docker-compose.prod.yml",
+      "auto_fixable": true,
+      "fix_complexity": "trivial"
     },
     {
       "rule_id": "uc.no_uc_directory",
