@@ -3,6 +3,7 @@ gunicorn>=22
 
 # IIL Platform Packages
 iil-learnfw[api] @ git+https://github.com/achimdehnert/learnfw.git@main
+iil-platform-context @ git+https://github.com/achimdehnert/platform.git#subdirectory=packages/platform-context
 
 # Infrastructure
 celery[redis]>=5.3
