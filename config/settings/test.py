@@ -8,8 +8,7 @@ DEBUG = False
 ALLOWED_HOSTS = ["*"]
 
 # Override decouple secrets with test defaults
-SECRET_KEY = "test-secret-key-not-for-production"
-
+SECRET_KEY = "test-secret-key-not-for-production"  # hardcoded-ok: test settings
 # ADR-141: Explicit PostgreSQL — SQLite is BANNED for testing
 DATABASES = {
     "default": {
