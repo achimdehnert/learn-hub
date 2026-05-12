@@ -1,4 +1,4 @@
-"""Learn Hub — Test Settings (ADR-141: PostgreSQL-Only Testing)"""
+"""Learn Hub — Test Settings (ADR-179: PostgreSQL-Only Testing)"""
 
 from decouple import config
 
@@ -9,7 +9,7 @@ ALLOWED_HOSTS = ["*"]
 
 # Override decouple secrets with test defaults
 SECRET_KEY = "test-secret-key-not-for-production"  # hardcoded-ok: test settings
-# ADR-141: Explicit PostgreSQL — SQLite is BANNED for testing
+# ADR-179: Explicit PostgreSQL — SQLite is BANNED for testing
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
