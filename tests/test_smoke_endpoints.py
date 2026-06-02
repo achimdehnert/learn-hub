@@ -56,9 +56,7 @@ def _collect_url_names(urlpatterns, prefix="", namespace=""):
     for pattern in urlpatterns:
         if isinstance(pattern, URLResolver):
             ns = f"{namespace}:{pattern.namespace}" if pattern.namespace else namespace
-            urls.extend(
-                _collect_url_names(pattern.url_patterns, prefix=prefix, namespace=ns)
-            )
+            urls.extend(_collect_url_names(pattern.url_patterns, prefix=prefix, namespace=ns))
         elif isinstance(pattern, URLPattern) and pattern.name:
             name = f"{namespace}:{pattern.name}" if namespace else pattern.name
             urls.append(name)
@@ -77,10 +75,7 @@ def _should_skip(name):
     """Check if URL name should be skipped."""
     if name in SKIP_URL_NAMES:
         return True
-    for prefix in SKIP_URL_PREFIXES:
-        if name.startswith(prefix):
-            return True
-    return False
+    return any(name.startswith(prefix) for prefix in SKIP_URL_PREFIXES)
 
 
 def _reverse_url(name):
@@ -192,9 +187,7 @@ class TestEndpointSmoke:
                 continue
             if url is None and reason != "skipped":
                 unreversible.append(name)
-        assert not unreversible, (
-            f"These URL names could not be reversed: {unreversible}"
-        )
+        assert not unreversible, f"These URL names could not be reversed: {unreversible}"
 
     def test_no_url_returns_500(self, auth_client):
         """No discovered endpoint should return HTTP 500."""
@@ -209,9 +202,7 @@ class TestEndpointSmoke:
             response = auth_client.get(url, HTTP_ACCEPT="application/json")
             if response.status_code >= 500:
                 errors_500.append(f"{name} → {url} → {response.status_code}")
-        assert not errors_500, (
-            "These endpoints returned 5xx:\n" + "\n".join(errors_500)
-        )
+        assert not errors_500, "These endpoints returned 5xx:\n" + "\n".join(errors_500)
 
     def test_no_url_returns_404(self, auth_client):
         """No discovered list endpoint should return HTTP 404."""
@@ -226,9 +217,7 @@ class TestEndpointSmoke:
             response = auth_client.get(url, HTTP_ACCEPT="application/json")
             if response.status_code == 404:
                 errors_404.append(f"{name} → {url}")
-        assert not errors_404, (
-            "These endpoints returned 404:\n" + "\n".join(errors_404)
-        )
+        assert not errors_404, "These endpoints returned 404:\n" + "\n".join(errors_404)
 
 
 # ---------------------------------------------------------------------------
@@ -236,8 +225,9 @@ class TestEndpointSmoke:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    import django
     import os
+
+    import django
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.test")
     django.setup()

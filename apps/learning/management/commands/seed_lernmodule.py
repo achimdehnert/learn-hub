@@ -2,9 +2,8 @@
 
 import uuid
 
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-
+from django.core.management.base import BaseCommand
 from iil_learnfw.models import (
     Answer,
     Category,
@@ -60,18 +59,36 @@ COURSE_DATA = {
                             {
                                 "text": "Was beschreibt Shadow AI am besten?",
                                 "answers": [
-                                    ("KI-Systeme, die von der IT-Abteilung offiziell eingeführt wurden", False),
-                                    ("KI-Tools, die Mitarbeitende ohne offizielle Freigabe im Arbeitsalltag nutzen", True),
+                                    (
+                                        "KI-Systeme, die von der IT-Abteilung offiziell eingeführt wurden",
+                                        False,
+                                    ),
+                                    (
+                                        "KI-Tools, die Mitarbeitende ohne offizielle Freigabe im Arbeitsalltag nutzen",
+                                        True,
+                                    ),
                                     ("Veraltete KI-Systeme, die nicht mehr gewartet werden", False),
-                                    ("KI, die im Hintergrund Daten verarbeitet, ohne Nutzerinteraktion", False),
+                                    (
+                                        "KI, die im Hintergrund Daten verarbeitet, ohne Nutzerinteraktion",
+                                        False,
+                                    ),
                                 ],
                             },
                             {
                                 "text": "Warum ist Shadow AI primär ein Governance-Problem und nicht nur ein IT-Problem?",
                                 "answers": [
-                                    ("Weil IT-Abteilungen grundsätzlich zu wenig Budget haben", False),
-                                    ("Weil KI-Tools immer schlechtere Ergebnisse liefern als Menschen", False),
-                                    ("Weil Unternehmen für KI-gestützte Entscheidungen haften — auch wenn sie nicht wissen, dass KI beteiligt war", True),
+                                    (
+                                        "Weil IT-Abteilungen grundsätzlich zu wenig Budget haben",
+                                        False,
+                                    ),
+                                    (
+                                        "Weil KI-Tools immer schlechtere Ergebnisse liefern als Menschen",
+                                        False,
+                                    ),
+                                    (
+                                        "Weil Unternehmen für KI-gestützte Entscheidungen haften — auch wenn sie nicht wissen, dass KI beteiligt war",
+                                        True,
+                                    ),
                                     ("Weil Shadow AI nur in großen Konzernen vorkommt", False),
                                 ],
                             },
@@ -112,18 +129,33 @@ COURSE_DATA = {
                                 "text": "Was beschreibt 'Informationsfilterung durch KI' am treffendsten?",
                                 "answers": [
                                     ("KI löscht irrelevante Daten aus Datenbanken", False),
-                                    ("KI bestimmt, welche Informationen dem Entscheider präsentiert werden — bevor er mit dem Denken beginnt", True),
+                                    (
+                                        "KI bestimmt, welche Informationen dem Entscheider präsentiert werden — bevor er mit dem Denken beginnt",
+                                        True,
+                                    ),
                                     ("KI filtert Spam aus E-Mail-Postfächern", False),
-                                    ("KI überprüft Entscheidungen nach ihrer Umsetzung auf Richtigkeit", False),
+                                    (
+                                        "KI überprüft Entscheidungen nach ihrer Umsetzung auf Richtigkeit",
+                                        False,
+                                    ),
                                 ],
                             },
                             {
                                 "text": "Was versteht man unter 'Verantwortungsdiffusion' im Kontext von KI?",
                                 "answers": [
                                     ("KI trägt die alleinige Verantwortung für Fehler", False),
-                                    ("Verantwortung wird automatisch an den KI-Anbieter übertragen", False),
-                                    ("Durch KI-Beteiligung entstehen Graubereiche, in denen unklar ist, wer verantwortlich ist", True),
-                                    ("Manager können Verantwortung legal an KI-Systeme delegieren", False),
+                                    (
+                                        "Verantwortung wird automatisch an den KI-Anbieter übertragen",
+                                        False,
+                                    ),
+                                    (
+                                        "Durch KI-Beteiligung entstehen Graubereiche, in denen unklar ist, wer verantwortlich ist",
+                                        True,
+                                    ),
+                                    (
+                                        "Manager können Verantwortung legal an KI-Systeme delegieren",
+                                        False,
+                                    ),
                                 ],
                             },
                             {
@@ -131,8 +163,14 @@ COURSE_DATA = {
                                 "answers": [
                                     ("KI verbessert immer die Entscheidungsqualität", False),
                                     ("KI verschlechtert immer die Entscheidungsqualität", False),
-                                    ("KI kann Entscheidungsqualität verbessern — aber nur unter kontrollierten, transparenten Bedingungen", True),
-                                    ("Die Qualität hängt ausschließlich von der Datenmenge ab", False),
+                                    (
+                                        "KI kann Entscheidungsqualität verbessern — aber nur unter kontrollierten, transparenten Bedingungen",
+                                        True,
+                                    ),
+                                    (
+                                        "Die Qualität hängt ausschließlich von der Datenmenge ab",
+                                        False,
+                                    ),
                                 ],
                             },
                         ],
@@ -173,9 +211,15 @@ COURSE_DATA = {
                             {
                                 "text": "Was trifft auf ein Unternehmen auf Souveränitätsstufe 2 zu?",
                                 "answers": [
-                                    ("Es kann alle drei Kontrollfragen jederzeit sicher beantworten", False),
+                                    (
+                                        "Es kann alle drei Kontrollfragen jederzeit sicher beantworten",
+                                        False,
+                                    ),
                                     ("Es hat keinerlei Kenntnis über seinen KI-Einsatz", False),
-                                    ("Es hat offizielle KI-Tools eingeführt, aber Shadow AI läuft weiterhin unkontrolliert", True),
+                                    (
+                                        "Es hat offizielle KI-Tools eingeführt, aber Shadow AI läuft weiterhin unkontrolliert",
+                                        True,
+                                    ),
                                     ("Es ist vollständig auf den EU AI Act vorbereitet", False),
                                 ],
                             },
@@ -222,27 +266,57 @@ COURSE_DATA = {
                                 "text": "Was versteht man unter dem 'Selbstmodell' eines Managers?",
                                 "answers": [
                                     ("Ein formales Organigramm mit Kompetenzbeschreibung", False),
-                                    ("Die innere Repräsentation der eigenen Stärken, Entscheidungsstile und der eigenen Rolle als Führungskraft", True),
-                                    ("Ein KI-generiertes Profil auf Basis von Leistungsdaten", False),
+                                    (
+                                        "Die innere Repräsentation der eigenen Stärken, Entscheidungsstile und der eigenen Rolle als Führungskraft",
+                                        True,
+                                    ),
+                                    (
+                                        "Ein KI-generiertes Profil auf Basis von Leistungsdaten",
+                                        False,
+                                    ),
                                     ("Die offizielle Stellenbeschreibung im Arbeitsvertrag", False),
                                 ],
                             },
                             {
                                 "text": "Was beschreibt das Reaktionsmuster 'Abwehr' am besten?",
                                 "answers": [
-                                    ("Der Manager nutzt KI intensiv und vertraut ihren Empfehlungen vollständig", False),
-                                    ("Der Manager lehnt KI grundsätzlich ab, weil er seine Erfahrung für unersetzbar hält", True),
-                                    ("Der Manager integriert KI als eine Informationsquelle unter mehreren", False),
-                                    ("Der Manager delegiert alle KI-Entscheidungen an die IT-Abteilung", False),
+                                    (
+                                        "Der Manager nutzt KI intensiv und vertraut ihren Empfehlungen vollständig",
+                                        False,
+                                    ),
+                                    (
+                                        "Der Manager lehnt KI grundsätzlich ab, weil er seine Erfahrung für unersetzbar hält",
+                                        True,
+                                    ),
+                                    (
+                                        "Der Manager integriert KI als eine Informationsquelle unter mehreren",
+                                        False,
+                                    ),
+                                    (
+                                        "Der Manager delegiert alle KI-Entscheidungen an die IT-Abteilung",
+                                        False,
+                                    ),
                                 ],
                             },
                             {
                                 "text": "Welches Reaktionsmuster beschreibt souveränes Verhalten?",
                                 "answers": [
-                                    ("KI-Empfehlungen immer umsetzen — Maschinen sind objektiver", False),
-                                    ("KI grundsätzlich kritisch gegenüberstehen — Menschen entscheiden besser", False),
-                                    ("KI bewusst als Werkzeug einsetzen, KI-Output als eine Quelle unter mehreren nutzen und Verantwortung behalten", True),
-                                    ("KI nur für operative Aufgaben nutzen, nie für strategische Entscheidungen", False),
+                                    (
+                                        "KI-Empfehlungen immer umsetzen — Maschinen sind objektiver",
+                                        False,
+                                    ),
+                                    (
+                                        "KI grundsätzlich kritisch gegenüberstehen — Menschen entscheiden besser",
+                                        False,
+                                    ),
+                                    (
+                                        "KI bewusst als Werkzeug einsetzen, KI-Output als eine Quelle unter mehreren nutzen und Verantwortung behalten",
+                                        True,
+                                    ),
+                                    (
+                                        "KI nur für operative Aufgaben nutzen, nie für strategische Entscheidungen",
+                                        False,
+                                    ),
                                 ],
                             },
                         ],
@@ -271,9 +345,18 @@ COURSE_DATA = {
                                 "text": "Was beschreibt Automation Bias am präzisesten?",
                                 "answers": [
                                     ("Die Tendenz, Maschinen prinzipiell abzulehnen", False),
-                                    ("Die Tendenz, automatisiert generierten Empfehlungen zu vertrauen — auch wenn eigene Informationen dagegen sprechen", True),
-                                    ("Die Fähigkeit, automatisierte Prozesse schnell zu verstehen", False),
-                                    ("Die Überzeugung, dass KI alle manuellen Tätigkeiten ersetzen sollte", False),
+                                    (
+                                        "Die Tendenz, automatisiert generierten Empfehlungen zu vertrauen — auch wenn eigene Informationen dagegen sprechen",
+                                        True,
+                                    ),
+                                    (
+                                        "Die Fähigkeit, automatisierte Prozesse schnell zu verstehen",
+                                        False,
+                                    ),
+                                    (
+                                        "Die Überzeugung, dass KI alle manuellen Tätigkeiten ersetzen sollte",
+                                        False,
+                                    ),
                                 ],
                             },
                             {
@@ -281,7 +364,10 @@ COURSE_DATA = {
                                 "answers": [
                                     ("KI macht Mitarbeitende absichtlich abhängig", False),
                                     ("Durch fehlende Schulungen zu neuen KI-Tools", False),
-                                    ("Durch regelmäßige Delegation kognitiver Aufgaben an KI verlieren Menschen die Fähigkeit, diese selbst zu leisten", True),
+                                    (
+                                        "Durch regelmäßige Delegation kognitiver Aufgaben an KI verlieren Menschen die Fähigkeit, diese selbst zu leisten",
+                                        True,
+                                    ),
                                     ("Durch technische Fehler in KI-Systemen", False),
                                 ],
                             },
@@ -289,9 +375,15 @@ COURSE_DATA = {
                                 "text": "Warum verstärkt KI den Confirmation Bias?",
                                 "answers": [
                                     ("KI hat eigene Meinungen, die sie durchsetzt", False),
-                                    ("KI-Systeme optimieren auf Nutzerzufriedenheit und liefern eher bestätigende Informationen", True),
+                                    (
+                                        "KI-Systeme optimieren auf Nutzerzufriedenheit und liefern eher bestätigende Informationen",
+                                        True,
+                                    ),
                                     ("KI kann nur positive Informationen verarbeiten", False),
-                                    ("Confirmation Bias existiert nur bei Menschen, nicht bei KI", False),
+                                    (
+                                        "Confirmation Bias existiert nur bei Menschen, nicht bei KI",
+                                        False,
+                                    ),
                                 ],
                             },
                         ],
@@ -322,9 +414,18 @@ COURSE_DATA = {
                             {
                                 "text": "Was ist das Ziel der Slow Down Rule?",
                                 "answers": [
-                                    ("KI-gestützte Prozesse zu verlangsamen, um Kosten zu sparen", False),
-                                    ("Eine obligatorische Bedenkzeit zwischen KI-Empfehlung und Entscheidung, um kritische Reflexion zu ermöglichen", True),
-                                    ("Alle wichtigen Entscheidungen auf den nächsten Tag zu verschieben", False),
+                                    (
+                                        "KI-gestützte Prozesse zu verlangsamen, um Kosten zu sparen",
+                                        False,
+                                    ),
+                                    (
+                                        "Eine obligatorische Bedenkzeit zwischen KI-Empfehlung und Entscheidung, um kritische Reflexion zu ermöglichen",
+                                        True,
+                                    ),
+                                    (
+                                        "Alle wichtigen Entscheidungen auf den nächsten Tag zu verschieben",
+                                        False,
+                                    ),
                                     ("KI-Tools nur noch einmal täglich zu nutzen", False),
                                 ],
                             },
@@ -341,7 +442,10 @@ COURSE_DATA = {
                                 "text": "Was bedeutet die '3-Prompts-Regel' bei Adversarial Thinking?",
                                 "answers": [
                                     ("Drei verschiedene KI-Tools gleichzeitig befragen", False),
-                                    ("Bestätigendes Framing + Adversariales Framing + Blindspot-Abfrage", True),
+                                    (
+                                        "Bestätigendes Framing + Adversariales Framing + Blindspot-Abfrage",
+                                        True,
+                                    ),
                                     ("Drei Mal dasselbe fragen und Durchschnitt nehmen", False),
                                     ("Drei Minuten warten zwischen den Prompts", False),
                                 ],
@@ -391,9 +495,15 @@ COURSE_DATA = {
                             {
                                 "text": "Was sind die Hauptpflichten bei KI-Systemen der Kategorie 'Begrenztes Risiko'?",
                                 "answers": [
-                                    ("Vollständige technische Dokumentation und EU-Datenbankregistrierung", False),
+                                    (
+                                        "Vollständige technische Dokumentation und EU-Datenbankregistrierung",
+                                        False,
+                                    ),
                                     ("Verbot des Einsatzes in der EU", False),
-                                    ("Kennzeichnung, dass der Nutzer mit einer KI interagiert", True),
+                                    (
+                                        "Kennzeichnung, dass der Nutzer mit einer KI interagiert",
+                                        True,
+                                    ),
                                     ("Jährliche externe Prüfung durch Behörden", False),
                                 ],
                             },
@@ -433,9 +543,15 @@ COURSE_DATA = {
                             {
                                 "text": "Wen betrifft Artikel 4 EU AI Act?",
                                 "answers": [
-                                    ("Nur Unternehmen, die KI-Systeme entwickeln und verkaufen", False),
+                                    (
+                                        "Nur Unternehmen, die KI-Systeme entwickeln und verkaufen",
+                                        False,
+                                    ),
                                     ("Nur Unternehmen mit mehr als 250 Mitarbeitenden", False),
-                                    ("Alle Unternehmen, die KI-Systeme einsetzen — unabhängig von Größe und Branche", True),
+                                    (
+                                        "Alle Unternehmen, die KI-Systeme einsetzen — unabhängig von Größe und Branche",
+                                        True,
+                                    ),
                                     ("Nur Unternehmen, die Hochrisiko-KI einsetzen", False),
                                 ],
                             },
@@ -443,16 +559,28 @@ COURSE_DATA = {
                                 "text": "Was beschreibt Ebene 2 (Anwendungswissen) im Drei-Ebenen-Modell?",
                                 "answers": [
                                     ("Grundlegendes KI-Verständnis für alle Mitarbeitenden", False),
-                                    ("Strategisches Wissen für Führungskräfte über EU AI Act", False),
-                                    ("Tool-spezifische Kompetenz für Mitarbeitende, die KI regelmäßig einsetzen", True),
+                                    (
+                                        "Strategisches Wissen für Führungskräfte über EU AI Act",
+                                        False,
+                                    ),
+                                    (
+                                        "Tool-spezifische Kompetenz für Mitarbeitende, die KI regelmäßig einsetzen",
+                                        True,
+                                    ),
                                     ("Technisches Entwicklerwissen für IT-Spezialisten", False),
                                 ],
                             },
                             {
                                 "text": "Warum reicht ein einmaliges Schulungszertifikat nicht?",
                                 "answers": [
-                                    ("Weil Zertifikate grundsätzlich rechtlich unwirksam sind", False),
-                                    ("Weil sich KI schnell weiterentwickelt und Kompetenz aktuell bleiben muss", True),
+                                    (
+                                        "Weil Zertifikate grundsätzlich rechtlich unwirksam sind",
+                                        False,
+                                    ),
+                                    (
+                                        "Weil sich KI schnell weiterentwickelt und Kompetenz aktuell bleiben muss",
+                                        True,
+                                    ),
                                     ("Weil nur mündliche Prüfungen anerkannt werden", False),
                                     ("Weil jede Abteilung ein eigenes Zertifikat braucht", False),
                                 ],
@@ -488,8 +616,14 @@ COURSE_DATA = {
                                 "text": "Welche drei Kernpflichten hat ein KMU nach EU AI Act als erste Priorität?",
                                 "answers": [
                                     ("KI-Patent, Softwarelizenzen, IT-Infrastruktur", False),
-                                    ("KI-Inventar erstellen, Risikobewertung, Kompetenznachweise sichern", True),
-                                    ("Externe Prüfung, Datenbankregistrierung, Behördenantrag", False),
+                                    (
+                                        "KI-Inventar erstellen, Risikobewertung, Kompetenznachweise sichern",
+                                        True,
+                                    ),
+                                    (
+                                        "Externe Prüfung, Datenbankregistrierung, Behördenantrag",
+                                        False,
+                                    ),
                                     ("KI-Strategie, Investitionsplan, Beratungsvertrag", False),
                                 ],
                             },
@@ -498,16 +632,28 @@ COURSE_DATA = {
                                 "answers": [
                                     ("Eine externe Anwaltskanzlei beauftragen", False),
                                     ("Alle KI-Tools sofort deinstallieren", False),
-                                    ("In der Führungsrunde fragen: 'Welche KI-Tools setzt Ihr Team ein?'", True),
-                                    ("Ein vollständiges KI-Governance-System implementieren", False),
+                                    (
+                                        "In der Führungsrunde fragen: 'Welche KI-Tools setzt Ihr Team ein?'",
+                                        True,
+                                    ),
+                                    (
+                                        "Ein vollständiges KI-Governance-System implementieren",
+                                        False,
+                                    ),
                                 ],
                             },
                             {
                                 "text": "Was gehört in den Monat 2 des 90-Tage-Plans?",
                                 "answers": [
                                     ("Shadow AI Radar und KI-Inventar erstellen", False),
-                                    ("Klassifizierungs-Workshop und Risikobewertung der Hochrisiko-Systeme", True),
-                                    ("KI-Nutzungsrichtlinie kommunizieren und Basisschulung durchführen", False),
+                                    (
+                                        "Klassifizierungs-Workshop und Risikobewertung der Hochrisiko-Systeme",
+                                        True,
+                                    ),
+                                    (
+                                        "KI-Nutzungsrichtlinie kommunizieren und Basisschulung durchführen",
+                                        False,
+                                    ),
                                     ("Externe Berater beauftragen und Budget planen", False),
                                 ],
                             },
@@ -532,9 +678,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options["reset"]:
-            Course.objects.filter(
-                title=COURSE_DATA["title"]
-            ).delete()
+            Course.objects.filter(title=COURSE_DATA["title"]).delete()
             self.stdout.write("Deleted existing course.")
 
         # Category
@@ -558,9 +702,7 @@ class Command(BaseCommand):
         self.stdout.write(f"{action} course: {course.title}")
 
         if not created and not options["reset"]:
-            self.stdout.write(self.style.WARNING(
-                "Course already exists. Use --reset to recreate."
-            ))
+            self.stdout.write(self.style.WARNING("Course already exists. Use --reset to recreate."))
             return
 
         # Chapters + Lessons + Quizzes
@@ -604,7 +746,7 @@ class Command(BaseCommand):
                     tenant_id=DEFAULT_TENANT,
                 )
 
-                for q_idx, question_data in enumerate(q_data["questions"], 1):
+                for _q_idx, question_data in enumerate(q_data["questions"], 1):
                     question = Question.objects.create(
                         quiz=quiz,
                         text=question_data["text"],
@@ -622,13 +764,14 @@ class Command(BaseCommand):
                         )
 
                 self.stdout.write(
-                    f"      Quiz: {quiz.title} "
-                    f"({len(q_data['questions'])} questions)"
+                    f"      Quiz: {quiz.title} ({len(q_data['questions'])} questions)"
                 )
 
-        self.stdout.write(self.style.SUCCESS(
-            f"\nDone! Created: 1 course, "
-            f"{len(COURSE_DATA['chapters'])} chapters, "
-            f"{total_lessons} lessons, "
-            f"{total_questions} questions"
-        ))
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"\nDone! Created: 1 course, "
+                f"{len(COURSE_DATA['chapters'])} chapters, "
+                f"{total_lessons} lessons, "
+                f"{total_questions} questions"
+            )
+        )

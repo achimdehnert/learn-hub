@@ -1,7 +1,6 @@
 """Admin registrations for iil_learnfw models."""
 
 from django.contrib import admin
-
 from iil_learnfw.models import (
     Answer,
     Attempt,
@@ -26,7 +25,6 @@ from iil_learnfw.models import (
     UserPoints,
     UserProgress,
 )
-
 
 # --- Course ---
 

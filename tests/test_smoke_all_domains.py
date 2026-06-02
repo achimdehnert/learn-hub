@@ -229,6 +229,7 @@ PLATFORM_APPS = {
 # Helper
 # ---------------------------------------------------------------------------
 
+
 def _normalize_expected(expected):
     """Normalize expected status to a tuple."""
     if isinstance(expected, int):
@@ -239,14 +240,18 @@ def _normalize_expected(expected):
 def _get(url, **kwargs):
     """GET with timeout, follow redirects disabled."""
     return requests.get(
-        url, timeout=TIMEOUT, allow_redirects=False,
-        headers={"User-Agent": "bf-platform-smoke/1.0"}, **kwargs,
+        url,
+        timeout=TIMEOUT,
+        allow_redirects=False,
+        headers={"User-Agent": "bf-platform-smoke/1.0"},
+        **kwargs,
     )
 
 
 # ---------------------------------------------------------------------------
 # Test parameter generation
 # ---------------------------------------------------------------------------
+
 
 def _generate_external_params():
     """Generate (app_name, domain, path, expected) tuples for external tests."""
@@ -255,9 +260,7 @@ def _generate_external_params():
         domain = cfg["domain"]
         for path, expected in cfg["endpoints"]:
             test_id = f"{app_name}:{domain}{path}"
-            params.append(
-                pytest.param(domain, path, expected, id=test_id)
-            )
+            params.append(pytest.param(domain, path, expected, id=test_id))
     return params
 
 
@@ -270,15 +273,14 @@ def _generate_internal_params():
             continue
         for path, expected in cfg["endpoints"]:
             test_id = f"{app_name}:localhost:{port}{path}"
-            params.append(
-                pytest.param(port, path, expected, id=test_id)
-            )
+            params.append(pytest.param(port, path, expected, id=test_id))
     return params
 
 
 # ---------------------------------------------------------------------------
 # Tests — External (via Cloudflare Tunnel / public HTTPS)
 # ---------------------------------------------------------------------------
+
 
 class TestExternalSmoke:
     """Smoke tests via public HTTPS — tests Cloudflare + Nginx + App."""
@@ -295,14 +297,13 @@ class TestExternalSmoke:
         except requests.Timeout:
             pytest.fail(f"TIMEOUT ({TIMEOUT}s): {url}")
 
-        assert resp.status_code in expected, (
-            f"GET {url} → {resp.status_code} (expected {expected})"
-        )
+        assert resp.status_code in expected, f"GET {url} → {resp.status_code} (expected {expected})"
 
 
 # ---------------------------------------------------------------------------
 # Tests — Internal (via localhost ports, run ON the server)
 # ---------------------------------------------------------------------------
+
 
 class TestInternalSmoke:
     """Smoke tests via localhost — tests App directly (skip Nginx/CF).
@@ -324,14 +325,13 @@ class TestInternalSmoke:
         except requests.Timeout:
             pytest.fail(f"TIMEOUT ({TIMEOUT}s): {url}")
 
-        assert resp.status_code in expected, (
-            f"GET {url} → {resp.status_code} (expected {expected})"
-        )
+        assert resp.status_code in expected, f"GET {url} → {resp.status_code} (expected {expected})"
 
 
 # ---------------------------------------------------------------------------
 # Tests — DNS / TLS
 # ---------------------------------------------------------------------------
+
 
 class TestDNSAndTLS:
     """Verify DNS resolution and TLS certificate validity for all domains."""
@@ -342,6 +342,7 @@ class TestDNSAndTLS:
     def test_dns_resolves(self, domain):
         """Every domain must resolve in DNS."""
         import socket
+
         try:
             socket.getaddrinfo(domain, 443)
         except socket.gaierror:
@@ -350,17 +351,20 @@ class TestDNSAndTLS:
     @pytest.mark.parametrize("domain", ALL_DOMAINS)
     def test_tls_valid(self, domain):
         """Every domain must have a valid TLS certificate."""
-        import ssl
         import socket
+        import ssl
+
         ctx = ssl.create_default_context()
         try:
-            with socket.create_connection((domain, 443), timeout=TIMEOUT) as sock:
-                with ctx.wrap_socket(sock, server_hostname=domain) as ssock:
-                    cert = ssock.getpeercert()
-                    assert cert is not None, f"No TLS cert for {domain}"
+            with (
+                socket.create_connection((domain, 443), timeout=TIMEOUT) as sock,
+                ctx.wrap_socket(sock, server_hostname=domain) as ssock,
+            ):
+                cert = ssock.getpeercert()
+                assert cert is not None, f"No TLS cert for {domain}"
         except ssl.SSLCertVerificationError as e:
             pytest.fail(f"TLS cert invalid for {domain}: {e}")
-        except (socket.timeout, ConnectionRefusedError, OSError) as e:
+        except (TimeoutError, ConnectionRefusedError, OSError) as e:
             pytest.fail(f"Cannot connect to {domain}:443 — {e}")
 
 

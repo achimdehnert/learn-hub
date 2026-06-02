@@ -24,7 +24,8 @@ class Command(BaseCommand):
             self.stdout.write("Vorhandenen Kurs gelöscht.")
 
         cat, _ = Category.objects.get_or_create(
-            slug="ki-governance", defaults={"name": COURSE["category_name"]},
+            slug="ki-governance",
+            defaults={"name": COURSE["category_name"]},
         )
 
         course, created = Course.objects.update_or_create(
@@ -65,6 +66,6 @@ class Command(BaseCommand):
                 self.stdout.write(f"    Lektion {ls_data['ordering']}: {lesson.title}")
 
         total_lessons = sum(len(ch["lessons"]) for ch in CHAPTERS)
-        self.stdout.write(self.style.SUCCESS(
-            f"\nFertig: {len(CHAPTERS)} Kapitel, {total_lessons} Lektionen."
-        ))
+        self.stdout.write(
+            self.style.SUCCESS(f"\nFertig: {len(CHAPTERS)} Kapitel, {total_lessons} Lektionen.")
+        )
