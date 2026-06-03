@@ -10,6 +10,11 @@ from decouple import config
 # crashes with UndefinedValueError before our SECRET_KEY override can apply.
 # Prod is unaffected: it sets DJANGO_SECRET_KEY, so setdefault is a no-op there.
 os.environ.setdefault("DJANGO_SECRET_KEY", "test-secret-key-not-for-production")
+# iil_learnfw's deploy system-check (iil_learnfw.E001) requires a non-empty
+# IIL_LEARNFW['ASSESSMENT_IP_HASH_SALT'] (privacy: IP hashing for assessments).
+# base.py reads it from env with default="" → empty in CI → E001 fails. Seed a
+# test salt; prod stays env-driven/fail-loud (must set ASSESSMENT_IP_HASH_SALT).
+os.environ.setdefault("ASSESSMENT_IP_HASH_SALT", "test-salt-not-for-production")
 
 from .base import *  # noqa: E402, F401, F403
 
