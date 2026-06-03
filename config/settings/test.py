@@ -1,8 +1,22 @@
 """Learn Hub — Test Settings (ADR-179: PostgreSQL-Only Testing)"""
 
+import os
+
 from decouple import config
 
-from .base import *  # noqa: F401, F403
+# base.py reads SECRET_KEY = config("DJANGO_SECRET_KEY") at IMPORT time with no
+# default (intentional prod fail-loud guard). In CI/test there is no real secret,
+# so seed a throwaway value BEFORE importing base — otherwise the import below
+# crashes with UndefinedValueError before our SECRET_KEY override can apply.
+# Prod is unaffected: it sets DJANGO_SECRET_KEY, so setdefault is a no-op there.
+os.environ.setdefault("DJANGO_SECRET_KEY", "test-secret-key-not-for-production")
+# iil_learnfw's deploy system-check (iil_learnfw.E001) requires a non-empty
+# IIL_LEARNFW['ASSESSMENT_IP_HASH_SALT'] (privacy: IP hashing for assessments).
+# base.py reads it from env with default="" → empty in CI → E001 fails. Seed a
+# test salt; prod stays env-driven/fail-loud (must set ASSESSMENT_IP_HASH_SALT).
+os.environ.setdefault("ASSESSMENT_IP_HASH_SALT", "test-salt-not-for-production")
+
+from .base import *  # noqa: E402, F401, F403
 
 DEBUG = False
 ALLOWED_HOSTS = ["*"]
@@ -13,11 +27,17 @@ SECRET_KEY = "test-secret-key-not-for-production"  # hardcoded-ok: test settings
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("TEST_DB_NAME", default="learn_hub_test"),
-        "USER": config("TEST_DB_USER", default="dehnert"),
-        "PASSWORD": config("TEST_DB_PASSWORD", default=""),
-        "HOST": config("TEST_DB_HOST", default="localhost"),
-        "PORT": config("TEST_DB_PORT", default="5434"),
+        # Platform-CI convention is POSTGRES_* on localhost:5432 (test_user/test_pass/
+        # test_db); shared _ci-python.yml sets POSTGRES_HOST and runs the service there.
+        # Fall back to the older TEST_DB_* local-dev vars so existing .env setups keep
+        # working; final defaults match the CI postgres service.
+        "NAME": config("POSTGRES_DB", default=config("TEST_DB_NAME", default="test_db")),
+        "USER": config("POSTGRES_USER", default=config("TEST_DB_USER", default="test_user")),
+        "PASSWORD": config(
+            "POSTGRES_PASSWORD", default=config("TEST_DB_PASSWORD", default="test_pass")
+        ),
+        "HOST": config("POSTGRES_HOST", default=config("TEST_DB_HOST", default="localhost")),
+        "PORT": config("POSTGRES_PORT", default=config("TEST_DB_PORT", default="5432")),
         "TEST": {"NAME": "test_learn_hub"},
     }
 }

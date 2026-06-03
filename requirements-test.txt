@@ -1,0 +1,6 @@
+# Test requirements — installed by the shared CI (_ci-python.yml expects this
+# exact filename). Bridges learn-hub's requirements/dev.txt to the plugins the
+# shared workflow invokes pytest with (--cov → pytest-cov, -n/--dist → pytest-xdist).
+-r requirements/dev.txt
+pytest-cov>=5.0
+pytest-xdist>=3.5

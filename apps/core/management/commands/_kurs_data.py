@@ -1,4 +1,5 @@
 """Seed-Daten: KI ohne Risiko — 9 Kapitel, 27 Lektionen."""
+
 from apps.core.management.commands._kurs_kap1_5 import CHAPTERS_1_5
 from apps.core.management.commands._kurs_kap6_9 import CHAPTERS_6_9
 
