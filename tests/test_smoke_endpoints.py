@@ -144,7 +144,6 @@ class TestEndpointSmoke:
         "/api/categories/",
         "/api/courses/",
         "/api/enrollments/",
-        "/api/progress/",
         "/api/quizzes/",
         "/api/attempts/",
         "/api/certificates/",
@@ -152,8 +151,10 @@ class TestEndpointSmoke:
         "/api/leaderboard/",
         "/api/my-points/",
         "/api/assessments/types/",
-        "/api/assessments/attempts/",
-        "/api/assessments/reports/",
+        # NOTE: /api/progress/, /api/assessments/attempts/, /api/assessments/reports/
+        # are intentionally NOT list endpoints — their iil_learnfw viewsets are bare
+        # GenericViewSet / RetrieveModelMixin (no ListModelMixin), so the list URL 404s
+        # by design. They were wrongly asserted as list endpoints here.
     ]
 
     @pytest.mark.parametrize("url", API_LIST_ENDPOINTS)
@@ -205,11 +206,16 @@ class TestEndpointSmoke:
         assert not errors_500, "These endpoints returned 5xx:\n" + "\n".join(errors_500)
 
     def test_no_url_returns_404(self, auth_client):
-        """No discovered list endpoint should return HTTP 404."""
+        """No discovered LIST endpoint should return HTTP 404 (= route missing).
+
+        Detail endpoints (``*-detail``, reversed with pk=1) are excluded: against
+        an empty test DB they legitimately 404 with *object not found*, which is
+        not a missing-route error. This check is about list routes existing.
+        """
         all_names = get_all_url_names()
         errors_404 = []
         for name in all_names:
-            if _should_skip(name):
+            if _should_skip(name) or name.endswith("-detail"):
                 continue
             url, reason = _reverse_url(name)
             if url is None:
