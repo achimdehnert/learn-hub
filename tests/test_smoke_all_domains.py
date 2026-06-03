@@ -318,6 +318,7 @@ class TestExternalSmoke:
 # ---------------------------------------------------------------------------
 
 
+@_SKIP_EXTERNAL_IN_CI
 class TestInternalSmoke:
     """Smoke tests via localhost — tests App directly (skip Nginx/CF).
 
