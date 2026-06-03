@@ -22,11 +22,15 @@ SECRET_KEY = "test-secret-key-not-for-production"  # hardcoded-ok: test settings
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("TEST_DB_NAME", default="learn_hub_test"),
-        "USER": config("TEST_DB_USER", default="dehnert"),
-        "PASSWORD": config("TEST_DB_PASSWORD", default=""),
-        "HOST": config("TEST_DB_HOST", default="localhost"),
-        "PORT": config("TEST_DB_PORT", default="5434"),
+        # Platform-CI convention is POSTGRES_* on localhost:5432 (test_user/test_pass/
+        # test_db); shared _ci-python.yml sets POSTGRES_HOST and runs the service there.
+        # Fall back to the older TEST_DB_* local-dev vars so existing .env setups keep
+        # working; final defaults match the CI postgres service.
+        "NAME": config("POSTGRES_DB", default=config("TEST_DB_NAME", default="test_db")),
+        "USER": config("POSTGRES_USER", default=config("TEST_DB_USER", default="test_user")),
+        "PASSWORD": config("POSTGRES_PASSWORD", default=config("TEST_DB_PASSWORD", default="test_pass")),
+        "HOST": config("POSTGRES_HOST", default=config("TEST_DB_HOST", default="localhost")),
+        "PORT": config("POSTGRES_PORT", default=config("TEST_DB_PORT", default="5432")),
         "TEST": {"NAME": "test_learn_hub"},
     }
 }
