@@ -1,8 +1,17 @@
 """Learn Hub — Test Settings (ADR-179: PostgreSQL-Only Testing)"""
 
+import os
+
 from decouple import config
 
-from .base import *  # noqa: F401, F403
+# base.py reads SECRET_KEY = config("DJANGO_SECRET_KEY") at IMPORT time with no
+# default (intentional prod fail-loud guard). In CI/test there is no real secret,
+# so seed a throwaway value BEFORE importing base — otherwise the import below
+# crashes with UndefinedValueError before our SECRET_KEY override can apply.
+# Prod is unaffected: it sets DJANGO_SECRET_KEY, so setdefault is a no-op there.
+os.environ.setdefault("DJANGO_SECRET_KEY", "test-secret-key-not-for-production")
+
+from .base import *  # noqa: E402, F401, F403
 
 DEBUG = False
 ALLOWED_HOSTS = ["*"]
