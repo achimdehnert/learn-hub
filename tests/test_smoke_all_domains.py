@@ -6,6 +6,8 @@ Run with: pytest tests/test_smoke_all_domains.py -v --timeout=30
 Requires: requests (pip install requests)
 """
 
+import os
+
 import pytest
 import requests
 
@@ -282,6 +284,17 @@ def _generate_internal_params():
 # ---------------------------------------------------------------------------
 
 
+# External/network smoke tests are PRODUCTION MONITORING, not a CI unit gate:
+# they hit live external hub URLs / DNS / TLS and go red whenever any hub has a
+# blip (or right after a prod reboot) — unrelated to this repo's code. Skip them
+# under CI (GitHub Actions sets CI=true); run manually or via scheduled monitoring.
+_SKIP_EXTERNAL_IN_CI = pytest.mark.skipif(
+    os.environ.get("CI") == "true",
+    reason="external prod smoke/monitoring — not a blocking CI gate (run manually)",
+)
+
+
+@_SKIP_EXTERNAL_IN_CI
 class TestExternalSmoke:
     """Smoke tests via public HTTPS — tests Cloudflare + Nginx + App."""
 
@@ -333,6 +346,7 @@ class TestInternalSmoke:
 # ---------------------------------------------------------------------------
 
 
+@_SKIP_EXTERNAL_IN_CI
 class TestDNSAndTLS:
     """Verify DNS resolution and TLS certificate validity for all domains."""
 
