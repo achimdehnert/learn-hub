@@ -47,6 +47,11 @@ jobs:
       image_tag_override: ${{ inputs.image_tag_override || '' }}
       target_environment: ${{ inputs.target_environment || 'production' }}
       notify_discord: true
+      # Deploy-Runner pinnen (platform #461): generisches `self-hosted` kann
+      # non-deterministisch auf dev-hetzner statt prod-server landen (Root-Cause
+      # cad-hub#21). learn-hub deployt nach /opt/learn-hub auf dem Prod-Host
+      # (https://learn.iil.pet) → fest auf den `prod-server`-Runner pinnen.
+      deploy_runs_on: "prod-server"
       # Import-Smoke-Gate (platform #451): lädt Django + triggert Celery-Task-
       # Autodiscovery + Root-URLConf im frisch gebauten Image. Fängt Import-
       # Contract-Drift VOR dem Deploy — sonst erst zur Laufzeit als Worker-
