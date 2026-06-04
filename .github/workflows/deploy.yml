@@ -47,4 +47,10 @@ jobs:
       image_tag_override: ${{ inputs.image_tag_override || '' }}
       target_environment: ${{ inputs.target_environment || 'production' }}
       notify_discord: true
+      # Import-Smoke-Gate (platform #451): lädt Django + triggert Celery-Task-
+      # Autodiscovery + Root-URLConf im frisch gebauten Image. Fängt Import-
+      # Contract-Drift VOR dem Deploy — sonst erst zur Laufzeit als Worker-
+      # Crash-Loop sichtbar. DB-frei (nur Imports; DB-Connections sind lazy).
+      # learn-hub liest SECRET_KEY aus DJANGO_SECRET_KEY (base.py), nicht SECRET_KEY.
+      import_smoke: 'DJANGO_SECRET_KEY=ci-smoke DJANGO_SETTINGS_MODULE=config.settings.test python -c "import django; django.setup(); from config.celery import app; app.loader.import_default_modules(); from django.urls import get_resolver; get_resolver().url_patterns"'
     secrets: inherit
