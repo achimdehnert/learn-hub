@@ -12,3 +12,7 @@ psycopg[binary]>=3.1
 python-decouple>=3.8
 whitenoise>=6.5
 Pillow>=10.0
+# Transitive von iil-aifw (vom shared-CI installiert) — iil-aifw>=0.11.4 deklariert
+# tenacity, das hier nie gepinnt war → `pip check` rot (PR #14). writing-hub pinnt
+# es bereits; hier nachgezogen (Dependency-Completeness, vgl. risk-hub uv.lock-Lehre).
+tenacity>=8.2
