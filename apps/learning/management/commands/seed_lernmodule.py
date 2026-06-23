@@ -723,7 +723,7 @@ class Command(BaseCommand):
                 lesson = Lesson.objects.create(
                     chapter=chapter,
                     title=ls_data["title"],
-                    content_type="text",
+                    content_type="markdown",  # "text" ist kein gültiger learnfw-Choice
                     content_text=ls_data["content_text"],
                     estimated_duration_minutes=ls_data["estimated_duration_minutes"],
                     ordering=ls_idx,

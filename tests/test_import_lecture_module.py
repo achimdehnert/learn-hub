@@ -69,7 +69,10 @@ class TestImportLectureModule:
         lessons = Lesson.objects.filter(chapter=chapters[0])
         assert lessons.count() == 1
         ls = lessons.first()
-        assert ls.content_type == "text"
+        # gültiger learnfw-Choice (nicht das frühere out-of-enum "text")
+        valid = {c[0] for c in ls._meta.get_field("content_type").choices}
+        assert ls.content_type == "markdown"
+        assert ls.content_type in valid
         assert "- x" in ls.content_text
 
     def test_should_reject_wrong_schema(self, tmp_path):
