@@ -6,6 +6,10 @@ Live-RPC — KONZ-writing-hub-001 §5.1). Projektion:
     modul       → Course
     vorlesung   → Chapter   (ordering = dichtes 1..N nach position)
     themenblock → Lesson    (content_type="text")
+    deck_url    → Lesson    (content_type="pptx", external_url=deck_url) ans
+                  Kapitel-Ende — optional; das Deck wird extern (pptx-hub)
+                  gerendert/gehostet, deck_url wird im Bündel manuell gefüllt
+                  (File-Pfad-v0). Fehlt/leer → kein Deck-Lesson.
 
 Idempotenz wie ``seed_lernmodule``: Course per (title, tenant) angelegt;
 ohne ``--reset`` bricht ein zweiter Lauf ab (kein stilles Verdoppeln).
@@ -125,6 +129,23 @@ class Command(BaseCommand):
                     content_text=_lesson_text(block),
                     estimated_duration_minutes=per_min,
                     ordering=ls_idx,
+                    is_mandatory=True,
+                    tenant_id=tenant,
+                )
+                n_ls += 1
+
+            # Foliendeck (pptx-hub-Render, extern via deck_url) → eigene
+            # Lesson(content_type=pptx) ans Kapitel-Ende. external_url, kein
+            # File-Upload (File-Pfad). Leer/fehlend → kein Deck-Lesson.
+            deck_url = (v.get("deck_url") or "").strip()
+            if deck_url:
+                Lesson.objects.create(
+                    chapter=chapter,
+                    title=f"Foliendeck: {v.get('thema', '')}".rstrip(": ") or "Foliendeck",
+                    content_type="pptx",
+                    external_url=deck_url,
+                    estimated_duration_minutes=max(1, v.get("umfang_min", 0) or 5),
+                    ordering=len(bloecke) + 1,
                     is_mandatory=True,
                     tenant_id=tenant,
                 )
