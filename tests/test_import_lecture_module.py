@@ -94,3 +94,28 @@ class TestImportLectureModule:
     def test_should_error_on_missing_file(self):
         with pytest.raises(CommandError):
             call_command("import_lecture_module", "/nonexistent/modul.json")
+
+    def test_should_project_deck_url_to_pptx_lesson(self, tmp_path):
+        from iil_learnfw.models import Chapter, Course, Lesson
+
+        bundle = _bundle()
+        bundle["vorlesungen"][0]["deck_url"] = "https://decks.example/v-zwei.pptx"
+        call_command("import_lecture_module", _write(tmp_path, bundle))
+        course = Course.objects.get(title=MODUL)
+        # V-zwei (position 5) → ordering 2; trägt das Deck
+        chapter = Chapter.objects.get(course=course, title="V-zwei")
+        deck = Lesson.objects.get(chapter=chapter, content_type="pptx")
+        assert deck.external_url == "https://decks.example/v-zwei.pptx"
+        assert deck.ordering == len(bundle["vorlesungen"][0]["themenbloecke"]) + 1
+        # andere Vorlesung ohne deck_url → kein pptx-Lesson
+        other = Chapter.objects.get(course=course, title="V-eins")
+        assert not Lesson.objects.filter(chapter=other, content_type="pptx").exists()
+
+    def test_should_skip_empty_deck_url(self, tmp_path):
+        from iil_learnfw.models import Course, Lesson
+
+        bundle = _bundle()
+        bundle["vorlesungen"][0]["deck_url"] = "  "  # leer/whitespace → kein Deck
+        call_command("import_lecture_module", _write(tmp_path, bundle))
+        course = Course.objects.get(title=MODUL)
+        assert not Lesson.objects.filter(chapter__course=course, content_type="pptx").exists()
