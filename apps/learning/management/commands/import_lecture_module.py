@@ -5,7 +5,7 @@ Live-RPC — KONZ-writing-hub-001 §5.1). Projektion:
 
     modul       → Course
     vorlesung   → Chapter   (ordering = dichtes 1..N nach position)
-    themenblock → Lesson    (content_type="text")
+    themenblock → Lesson    (content_type="markdown")
     deck_url    → Lesson    (content_type="pptx", external_url=deck_url) ans
                   Kapitel-Ende — optional; das Deck wird extern (pptx-hub)
                   gerendert/gehostet, deck_url wird im Bündel manuell gefüllt
@@ -125,7 +125,9 @@ class Command(BaseCommand):
                 Lesson.objects.create(
                     chapter=chapter,
                     title=block.get("titel", f"Themenblock {ls_idx}"),
-                    content_type="text",
+                    # "markdown" (gültiger learnfw-Choice); content_text IST Markdown.
+                    # "text" ist NICHT in CONTENT_TYPE_CHOICES → kein Render-Handler.
+                    content_type="markdown",
                     content_text=_lesson_text(block),
                     estimated_duration_minutes=per_min,
                     ordering=ls_idx,
