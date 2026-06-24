@@ -13,7 +13,7 @@ on:
 jobs:
   ci:
     name: "CI"
-    uses: iilgmbh/shared-ci/.github/workflows/_ci-python.yml@test/wave3-aifw-tenacity-canary
+    uses: iilgmbh/shared-ci/.github/workflows/_ci-python.yml@v1.0.6
     with:
       python_version: "3.12"
       coverage_threshold: 80
