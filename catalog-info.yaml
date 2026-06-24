@@ -1,0 +1,26 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: learn-hub
+  description: Learning delivery platform — Modul-/Vorlesungs-Delivery via learnfw (Inhalte aus writing-hub)
+  tags: [django, learning, learnfw, delivery, lms]
+  annotations:
+    github.com/project-slug: achimdehnert/learn-hub
+    deployment/server: "88.198.191.108"
+    deployment/path: "/opt/learn-hub"
+    deployment/port: "8100"
+    deployment/health-url: "https://learn.iil.pet/livez/"
+    deployment/image: "ghcr.io/achimdehnert/learn-hub:latest"
+    deployment/compose-service: "learn-hub-web"
+    deployment/db-container: "learn_hub_db"
+    deployment/db-name: "learn_hub"
+spec:
+  type: service
+  lifecycle: production
+  owner: achimdehnert
+  system: learning-platform
+  domain: learning
+  providesApis: []
+  dependsOn:
+    - resource:postgresql
+    - resource:redis
