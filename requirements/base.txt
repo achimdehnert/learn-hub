@@ -2,7 +2,11 @@ Django>=5.0,<6.0
 gunicorn>=22
 
 # IIL Platform Packages
-iil-learnfw[api] @ git+https://github.com/achimdehnert/learnfw.git@main
+# Pin auf immutables PyPI-Release statt @main — Build-Reproduzierbarkeit
+# (Audit-Finding #6). Der `@main`-Drift war der Nährboden des Chapter.self_test-
+# Incidents (2026-06-23): CI/Prod zogen unkontrolliert HEAD. 0.5.4 enthält
+# self_test (verifiziert) → konsistent mit Migration 0003. Bump bewusst per PR.
+iil-learnfw[api]==0.5.4
 iil-platform-context>=0.7.0,<1
 
 # Infrastructure
@@ -12,3 +16,7 @@ psycopg[binary]>=3.1
 python-decouple>=3.8
 whitenoise>=6.5
 Pillow>=10.0
+# Transitive von iil-aifw (vom shared-CI installiert) — iil-aifw>=0.11.4 deklariert
+# tenacity, das hier nie gepinnt war → `pip check` rot (PR #14). writing-hub pinnt
+# es bereits; hier nachgezogen (Dependency-Completeness, vgl. risk-hub uv.lock-Lehre).
+tenacity>=8.2

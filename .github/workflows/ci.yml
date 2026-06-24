@@ -20,3 +20,24 @@ jobs:
       django_settings_module: "config.settings.test"
       enable_security_scan: true
     secrets: inherit
+
+  # Drift-Gate: Modell vs. Migrations-Dateien. Die Unit-Tests laufen mit
+  # `--no-migrations` (Test-DB aus den Modellen) → eine FEHLENDE Migration ist
+  # dort unsichtbar, schlägt aber in Prod (`migrate`) zu (Incident
+  # Chapter.self_test, 2026-06-23). `makemigrations --check` (DB-frei) fängt das.
+  migration-drift:
+    name: "Migration Drift Gate"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: pip install -r requirements.txt -r requirements-test.txt
+      - name: makemigrations --check (Modell == Migrations-Dateien?)
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.test
+        run: |
+          python manage.py makemigrations --check --dry-run \
+            || { echo "::error::Modell-/Migrations-Drift — eine Migration fehlt. Lokal: python manage.py makemigrations"; exit 1; }
