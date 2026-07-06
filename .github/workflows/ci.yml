@@ -1,7 +1,7 @@
-# ╔═══════════════════════════════════════════════════════════════════════════╗
-# ║  LEARN-HUB CI — Platform Reusable Workflow (ADR-057)                     ║
-# ║  Uses: achimdehnert/platform/.github/workflows/_ci-python.yml@main      ║
-# ╚═══════════════════════════════════════════════════════════════════════════╝
+# ╔════════════════════════════════════════════════════════════════════════════╗
+#║  LEARN-HUB CI — Platform Reusable Workflow (ADR-057)                     ║
+#║  Uses: achimdehnert/platform/.github/workflows/_ci-python.yml@main      ║
+# ╚════════════════════════════════════════════════════════════════════════════╝
 
 name: CI
 
@@ -12,7 +12,6 @@ on:
 
 jobs:
   ci:
-    name: "CI"
     uses: iilgmbh/shared-ci/.github/workflows/_ci-python.yml@v1.0.6
     with:
       python_version: "3.12"
