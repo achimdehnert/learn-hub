@@ -1,6 +1,6 @@
 # ╔════════════════════════════════════════════════════════════════════════════╗
 #║  LEARN-HUB CI — Platform Reusable Workflow (ADR-057)                     ║
-#║  Uses: achimdehnert/platform/.github/workflows/_ci-python.yml@main      ║
+#║  Uses: iilgmbh/shared-ci/.github/workflows/_ci-python.yml@v1.0.11       ║
 # ╚════════════════════════════════════════════════════════════════════════════╝
 
 name: CI
