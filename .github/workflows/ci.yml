@@ -1,6 +1,6 @@
 # ╔════════════════════════════════════════════════════════════════════════════╗
 #║  LEARN-HUB CI — Platform Reusable Workflow (ADR-057)                     ║
-#║  Uses: iilgmbh/shared-ci/.github/workflows/_ci-python.yml@v1.1.10       ║
+#║  Uses: iilgmbh/shared-ci/.github/workflows/_ci-python.yml@v1.1.12       ║
 # ╚════════════════════════════════════════════════════════════════════════════╝
 
 name: CI
@@ -12,7 +12,7 @@ on:
 
 jobs:
   ci:
-    uses: iilgmbh/shared-ci/.github/workflows/_ci-python.yml@v1.1.10
+    uses: iilgmbh/shared-ci/.github/workflows/_ci-python.yml@v1.1.12
     with:
       python_version: "3.12"
       coverage_threshold: 80
