@@ -48,7 +48,7 @@ jobs:
   deploy:
     needs: [ci]
     if: always() && (needs.ci.result == 'success' || needs.ci.result == 'skipped')
-    uses: iilgmbh/shared-ci/.github/workflows/_deploy-unified.yml@v1.1.12
+    uses: iilgmbh/shared-ci/.github/workflows/_deploy-unified.yml@v1.1.13
     with:
       app_name: "learn-hub"
       app_path: "/opt/learn-hub"
