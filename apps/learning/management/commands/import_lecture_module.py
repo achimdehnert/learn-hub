@@ -4,19 +4,24 @@ Konsumiert das ``lecture-module/v1``-Bündel aus writing-hub (File-Pfad, kein
 Live-RPC — KONZ-writing-hub-001 §5.1). Projektion:
 
     modul       → Course
-    vorlesung   → Chapter   (ordering = dichtes 1..N nach position)
+    vorlesung   → Chapter   (ordering = dichtes 1..N nach position;
+                  lernziele → description)
     themenblock → Lesson    (content_type="markdown")
-    deck_url    → Lesson    (content_type="pptx", external_url=deck_url) ans
-                  Kapitel-Ende — optional; das Deck wird extern (pptx-hub)
-                  gerendert/gehostet, deck_url wird im Bündel manuell gefüllt
-                  (File-Pfad-v0). Fehlt/leer → kein Deck-Lesson.
+    uebung      → Lesson    (content_type="markdown", „Übung: <titel>", nur die
+                  Aufgabe — die Lösungsskizze schickt writing-hub nicht mit)
+    deck_url    → Lesson    ans Kapitel-Ende, external_url=deck_url;
+                  content_type="pdf" bei ``.pdf`` (writing-hub liefert das Deck
+                  seit writing-hub#994 unter fester Adresse), sonst "pptx".
+                  Fehlt/leer → kein Deck-Lesson.
 
 Idempotenz wie ``seed_lernmodule``: Course per (title, tenant) angelegt;
 ohne ``--reset`` bricht ein zweiter Lauf ab (kein stilles Verdoppeln).
 ``unique_together(course, ordering)`` erzwingt die Normalisierung auf 1..N.
+Importierte Kurse bleiben ``draft``; ``--veroeffentlichen`` setzt sie in
+demselben Lauf live — ausdrücklich, nie als Nebenwirkung.
 
 Usage:
-    python manage.py import_lecture_module modul.json --tenant <uuid> [--reset]
+    python manage.py import_lecture_module modul.json --tenant <uuid> [--reset] [--veroeffentlichen]
 """
 
 from __future__ import annotations
@@ -29,6 +34,14 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 SCHEMA = "lecture-module/v1"
+
+
+def _lernziele_text(lernziele: list) -> str:
+    """Lernziele der Einheit → Kapitelbeschreibung (Markdown-Liste)."""
+    ziele = [str(z).strip() for z in lernziele if str(z).strip()]
+    if not ziele:
+        return ""
+    return "Lernziele:\n" + "\n".join(f"- {z}" for z in ziele)
 
 
 def _lesson_text(block: dict) -> str:
@@ -58,6 +71,11 @@ class Command(BaseCommand):
             "--reset",
             action="store_true",
             help="Vorhandenen Kurs (gleicher Titel + Tenant) vorher löschen",
+        )
+        parser.add_argument(
+            "--veroeffentlichen",
+            action="store_true",
+            help="Kurs nach dem Import auf 'published' setzen (Default: bleibt Entwurf)",
         )
 
     def handle(self, *args, **opts):
@@ -106,6 +124,9 @@ class Command(BaseCommand):
             raise CommandError(
                 f"Kurs {title!r} (Tenant {tenant}) existiert bereits — --reset zum Neuanlegen."
             )
+        if opts["veroeffentlichen"] and course.status != "published":
+            course.status = "published"
+            course.save(update_fields=["status"])
 
         # position darf in writing-hub Lücken/Dubletten haben → hier dicht 1..N.
         vorlesungen = sorted(data.get("vorlesungen", []), key=lambda v: v.get("position", 0))
@@ -114,40 +135,63 @@ class Command(BaseCommand):
             chapter = Chapter.objects.create(
                 course=course,
                 title=v.get("thema", f"Vorlesung {ch_idx}"),
-                description="",
+                description=_lernziele_text(v.get("lernziele") or []),
                 ordering=ch_idx,
                 tenant_id=tenant,
             )
             n_ch += 1
             bloecke = v.get("themenbloecke") or []
             per_min = max(1, round(v.get("umfang_min", 0) / len(bloecke))) if bloecke else 1
-            for ls_idx, block in enumerate(bloecke, 1):
+            ordering = 0
+            for block in bloecke:
+                ordering += 1
                 Lesson.objects.create(
                     chapter=chapter,
-                    title=block.get("titel", f"Themenblock {ls_idx}"),
+                    title=block.get("titel", f"Themenblock {ordering}"),
                     # "markdown" (gültiger learnfw-Choice); content_text IST Markdown.
                     # "text" ist NICHT in CONTENT_TYPE_CHOICES → kein Render-Handler.
                     content_type="markdown",
                     content_text=_lesson_text(block),
                     estimated_duration_minutes=per_min,
-                    ordering=ls_idx,
+                    ordering=ordering,
                     is_mandatory=True,
                     tenant_id=tenant,
                 )
                 n_ls += 1
 
-            # Foliendeck (pptx-hub-Render, extern via deck_url) → eigene
-            # Lesson(content_type=pptx) ans Kapitel-Ende. external_url, kein
-            # File-Upload (File-Pfad). Leer/fehlend → kein Deck-Lesson.
-            deck_url = (v.get("deck_url") or "").strip()
-            if deck_url:
+            # Übungen (writing-hub#994 K2): je eine Lektion mit der Aufgabe, nach
+            # den Themenblöcken. Die Lösungsskizze ist im Bündel nicht enthalten.
+            for ueb in v.get("uebungen") or []:
+                aufgabe = (ueb.get("aufgabe") or "").strip()
+                if not aufgabe:
+                    continue
+                ordering += 1
                 Lesson.objects.create(
                     chapter=chapter,
-                    title=f"Foliendeck: {v.get('thema', '')}".rstrip(": ") or "Foliendeck",
-                    content_type="pptx",
+                    title=f"Übung: {ueb.get('titel') or ordering}",
+                    content_type="markdown",
+                    content_text=aufgabe,
+                    estimated_duration_minutes=per_min,
+                    ordering=ordering,
+                    is_mandatory=True,
+                    tenant_id=tenant,
+                )
+                n_ls += 1
+
+            # Foliendeck ans Kapitel-Ende: external_url, kein File-Upload. Seit
+            # writing-hub#994 ist deck_url die feste Adresse des PDF auf writing-hub
+            # (…/deck.pdf) → content_type "pdf"; ein .pptx bleibt "pptx".
+            # Leer/fehlend → kein Deck-Lesson.
+            deck_url = (v.get("deck_url") or "").strip()
+            if deck_url:
+                ordering += 1
+                Lesson.objects.create(
+                    chapter=chapter,
+                    title=f"Foliensatz: {v.get('thema', '')}".rstrip(": ") or "Foliensatz",
+                    content_type="pdf" if deck_url.lower().endswith(".pdf") else "pptx",
                     external_url=deck_url,
                     estimated_duration_minutes=max(1, v.get("umfang_min", 0) or 5),
-                    ordering=len(bloecke) + 1,
+                    ordering=ordering,
                     is_mandatory=True,
                     tenant_id=tenant,
                 )
