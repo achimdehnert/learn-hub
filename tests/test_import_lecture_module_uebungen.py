@@ -60,7 +60,7 @@ class TestImportUebungenUndDeck:
         call_command("import_lecture_module", _write(tmp_path, _bundle_994()))
         course = Course.objects.get(title=MODUL)
         assert Chapter.objects.get(course=course, title="V-eins").description == (
-            "Lernziele:\n- Digitale Strategie von Digitalisierung unterscheiden\n- Den Fall Kaeser einordnen"
+            "Lernziele:\n\n- Digitale Strategie von Digitalisierung unterscheiden\n- Den Fall Kaeser einordnen"
         )
         # ohne Lernziele bleibt die Beschreibung leer (Positivkontrolle)
         assert Chapter.objects.get(course=course, title="V-zwei").description == ""
