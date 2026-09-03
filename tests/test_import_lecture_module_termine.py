@@ -63,7 +63,7 @@ class TestTermineAlsKapitel:
             f"Termin 2 — {TERMIN_2['label']}",
         ]
         assert (
-            kapitel[0].description == "Einheiten:\n- V-eins (3 UE)\n- Übung: Werkzeugmappe (1 UE)"
+            kapitel[0].description == "Einheiten:\n\n- V-eins (3 UE)\n- Übung: Werkzeugmappe (1 UE)"
         )
         titel = [
             lek.title for lek in Lesson.objects.filter(chapter=kapitel[0]).order_by("ordering")
@@ -78,7 +78,7 @@ class TestTermineAlsKapitel:
             "Foliensatz: Übung: Werkzeugmappe",
         ]
         einstieg = Lesson.objects.get(chapter=kapitel[0], title="V-eins")
-        assert einstieg.content_text == "Umfang: 3 UE\n\nLernziele:\n- Ziel A"
+        assert einstieg.content_text == "Umfang: 3 UE\n\nLernziele:\n\n- Ziel A"
 
     def test_should_keep_lernziele_in_the_chapter_when_no_termin_is_given(self, tmp_path):
         """Positivkontrolle: ohne termin bleibt „eine Einheit = ein Kapitel", kein Einstieg."""
@@ -89,7 +89,7 @@ class TestTermineAlsKapitel:
         call_command("import_lecture_module", _write(tmp_path, b))
         course = Course.objects.get(title=MODUL)
         kapitel = Chapter.objects.get(course=course, title="V-eins")
-        assert kapitel.description == "Lernziele:\n- Ziel A"
+        assert kapitel.description == "Lernziele:\n\n- Ziel A"
         assert [
             lek.title for lek in Lesson.objects.filter(chapter=kapitel).order_by("ordering")
         ] == ["TB-A"]

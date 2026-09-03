@@ -45,7 +45,7 @@ def _lernziele_text(lernziele: list) -> str:
     ziele = [str(z).strip() for z in lernziele if str(z).strip()]
     if not ziele:
         return ""
-    return "Lernziele:\n" + "\n".join(f"- {z}" for z in ziele)
+    return "Lernziele:\n\n" + "\n".join(f"- {z}" for z in ziele)
 
 
 def _einstieg_text(v: dict) -> str:
@@ -96,7 +96,7 @@ def _kapitel(vorlesungen: list) -> list[Kapitel]:
         gruppen.setdefault(schluessel, []).append(v)
     kapitel = []
     for nr, ((_, label), einheiten) in enumerate(sorted(gruppen.items()), 1):
-        beschreibung = "Einheiten:\n" + "\n".join(
+        beschreibung = "Einheiten:\n\n" + "\n".join(
             f"- {v.get('thema', '?')}" + (f" ({v['umfang_ue']} UE)" if v.get("umfang_ue") else "")
             for v in einheiten
         )
