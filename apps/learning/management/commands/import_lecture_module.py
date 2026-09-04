@@ -16,6 +16,8 @@ Live-RPC — KONZ-writing-hub-001 §5.1). Projektion:
                   content_type="pdf" bei ``.pdf`` (writing-hub liefert das Deck
                   seit writing-hub#994 unter fester Adresse), sonst "pptx".
                   Fehlt/leer → kein Deck-Lesson.
+    titelbild_url → Einstiegslektion, Bild (writing-hub#1010): erste Zeile der
+                  Einstiegslektion einer Einheit, nur http(s), sonst ignoriert.
 
 Idempotenz wie ``seed_lernmodule``: Course per (title, tenant) angelegt;
 ohne ``--reset`` bricht ein zweiter Lauf ab (kein stilles Verdoppeln).
@@ -48,9 +50,31 @@ def _lernziele_text(lernziele: list) -> str:
     return "Lernziele:\n\n" + "\n".join(f"- {z}" for z in ziele)
 
 
+def _titelbild_markdown(v: dict) -> str:
+    """Titelbild-URL der Einheit als Markdown-Bildzeile (writing-hub#1010).
+
+    Nur ``http://``/``https://`` — Schutz vor ``javascript:``/``data:`` in einem
+    Feld, das aus einem fremden Bündel kommt. ``)`` und Leerzeichen werden
+    prozent-kodiert, damit sie die Markdown-Bild-Syntax nicht vorzeitig
+    schließen.
+    """
+    url = str(v.get("titelbild_url") or "").strip()
+    if not url.lower().startswith(("http://", "https://")):
+        return ""
+    sichere_url = url.replace(")", "%29").replace(" ", "%20")
+    return f"![Titelbild: {v.get('thema', '')}]({sichere_url})"
+
+
 def _einstieg_text(v: dict) -> str:
-    """Einstiegslektion einer Einheit in einem Termin-Kapitel: Umfang + Lernziele."""
+    """Einstiegslektion einer Einheit in einem Termin-Kapitel.
+
+    Titelbild (writing-hub#1010, sofern vorhanden) als erste Zeile, danach
+    Umfang + Lernziele wie bisher.
+    """
     teile = []
+    titelbild = _titelbild_markdown(v)
+    if titelbild:
+        teile.append(titelbild)
     if v.get("umfang_ue"):
         teile.append(f"Umfang: {v['umfang_ue']} UE")
     lernziele = _lernziele_text(v.get("lernziele") or [])
