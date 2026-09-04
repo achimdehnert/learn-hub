@@ -93,3 +93,64 @@ class TestTermineAlsKapitel:
         assert [
             lek.title for lek in Lesson.objects.filter(chapter=kapitel).order_by("ordering")
         ] == ["TB-A"]
+
+
+@pytest.mark.django_db
+class TestTitelbildInEinstieg:
+    """Titelbild der Einheit in der Einstiegslektion (writing-hub#1010)."""
+
+    def test_should_put_titelbild_as_first_line_of_einstieg(self, tmp_path):
+        from iil_learnfw.models import Chapter, Course, Lesson
+
+        b = _bundle_termine()
+        b["vorlesungen"][1]["titelbild_url"] = (
+            "https://cdn.example/v-eins.png"  # v_eins, position 2
+        )
+        call_command("import_lecture_module", _write(tmp_path, b))
+        course = Course.objects.get(title=MODUL)
+        kapitel = Chapter.objects.get(course=course, title=f"Termin 1 — {TERMIN_1['label']}")
+        einstieg = Lesson.objects.get(chapter=kapitel, title="V-eins")
+        assert einstieg.content_text == (
+            "![Titelbild: V-eins](https://cdn.example/v-eins.png)"
+            "\n\nUmfang: 3 UE\n\nLernziele:\n\n- Ziel A"
+        )
+
+    def test_should_leave_einstieg_unchanged_when_titelbild_url_is_empty(self, tmp_path):
+        """Positivkontrolle: leeres Feld verhält sich wie fehlendes Feld (bestehender Stand)."""
+        from iil_learnfw.models import Chapter, Course, Lesson
+
+        b = _bundle_termine()
+        b["vorlesungen"][1]["titelbild_url"] = "  "
+        call_command("import_lecture_module", _write(tmp_path, b))
+        course = Course.objects.get(title=MODUL)
+        kapitel = Chapter.objects.get(course=course, title=f"Termin 1 — {TERMIN_1['label']}")
+        einstieg = Lesson.objects.get(chapter=kapitel, title="V-eins")
+        assert einstieg.content_text == "Umfang: 3 UE\n\nLernziele:\n\n- Ziel A"
+
+    def test_should_render_titelbild_markdown_to_img_tag(self, tmp_path):
+        """Positivkontrolle: das Bild kommt wirklich als <img> an (nicht nur als Text-Zeile)."""
+        from iil_learnfw.models import Chapter, Course, Lesson
+        from iil_learnfw.views import render_markdown
+
+        b = _bundle_termine()
+        url = "https://cdn.example/v-eins.png"
+        b["vorlesungen"][1]["titelbild_url"] = url
+        call_command("import_lecture_module", _write(tmp_path, b))
+        course = Course.objects.get(title=MODUL)
+        kapitel = Chapter.objects.get(course=course, title=f"Termin 1 — {TERMIN_1['label']}")
+        einstieg = Lesson.objects.get(chapter=kapitel, title="V-eins")
+        html = render_markdown(einstieg.content_text)
+        assert "<img" in html
+        assert url in html
+
+    def test_should_ignore_javascript_url_for_titelbild(self, tmp_path):
+        from iil_learnfw.models import Chapter, Course, Lesson
+
+        b = _bundle_termine()
+        b["vorlesungen"][1]["titelbild_url"] = "javascript:alert(1)"
+        call_command("import_lecture_module", _write(tmp_path, b))
+        course = Course.objects.get(title=MODUL)
+        kapitel = Chapter.objects.get(course=course, title=f"Termin 1 — {TERMIN_1['label']}")
+        einstieg = Lesson.objects.get(chapter=kapitel, title="V-eins")
+        assert "javascript:" not in einstieg.content_text
+        assert einstieg.content_text == "Umfang: 3 UE\n\nLernziele:\n\n- Ziel A"
