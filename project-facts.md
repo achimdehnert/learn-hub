@@ -1,7 +1,7 @@
 # Project Facts: learn-hub
 
 > Auto-generiert von `platform/.github/scripts/push_project_facts.py`
-> Letzte Aktualisierung: 2026-07-06 — bei Änderungen: `platform/gen-project-facts.yml` triggern
+> Letzte Aktualisierung: 2026-09-21 — bei Änderungen: `platform/gen-project-facts.yml` triggern
 
 ## Meta
 
@@ -11,10 +11,10 @@
 
 ## Lokale Umgebung (Dev Desktop — adehnert)
 
-- **Pfad**: `~/CascadeProjects/learn-hub` → `$GITHUB_DIR` = `~/CascadeProjects`
+- **Pfad**: `~/github/learn-hub` → `$GITHUB_DIR` = `~/github`
 - **src_root**: `./` (root) — `manage.py` liegt dort
 - **pythonpath**: `./`
-- **Venv**: `~/CascadeProjects/learn-hub/.venv/bin/python`
+- **Venv**: `~/github/learn-hub/.venv/bin/python`
 - **MCP aktiv**: `mcp0_` = github · `mcp1_` = orchestrator
 
 ## Settings
