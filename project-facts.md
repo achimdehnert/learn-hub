@@ -1,7 +1,7 @@
 # Project Facts: learn-hub
 
 > Auto-generiert von `platform/.github/scripts/push_project_facts.py`
-> Letzte Aktualisierung: 2026-09-21 — bei Änderungen: `platform/gen-project-facts.yml` triggern
+> Letzte Aktualisierung: 2026-09-28 — bei Änderungen: `platform/gen-project-facts.yml` triggern
 
 ## Meta
 
